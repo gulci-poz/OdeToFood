@@ -42,15 +42,24 @@ namespace OdeToFood
 
             if (env.IsDevelopment())
             {
+                // ten middleware przetwarza responses z innych middleware
                 app.UseDeveloperExceptionPage();
             }
 
             // terminal piece of middleware - nie będzie wywołany kolejny middleware
-            app.UseWelcomePage("/welcome");
+            //app.UseWelcomePage("/welcome");
+
+            // z użyciem obiektu opcji
+            app.UseWelcomePage(new WelcomePageOptions
+            {
+                Path = "/welcome"
+            });
 
             // terminal piece of middleware
             app.Run(async (context) =>
             {
+                //throw new Exception("");
+
                 var message = greeter.GetGreeting();
                 await context.Response.WriteAsync(message);
             });
