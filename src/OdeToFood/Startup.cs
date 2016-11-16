@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Routing;
 
 namespace OdeToFood
 {
@@ -64,8 +65,6 @@ namespace OdeToFood
             // można też umożliwić directory serving
             app.UseFileServer();
 
-            app.UseMvcWithDefaultRoute();
-
             // wprowadzamy MVC, na razie nie używamy middleware UseWelcomePage ani Run
             /*
             // terminal piece of middleware - nie będzie wywołany kolejny middleware
@@ -86,6 +85,24 @@ namespace OdeToFood
                 await context.Response.WriteAsync(message);
             });
             */
+
+            //app.UseMvcWithDefaultRoute();
+
+            // rozwijamy routing poza default route
+
+            app.UseMvc(ConfigureRoutes);
+
+            // jeśli nie znajdzie route w ConfigureRoutes
+            app.Run(ctx => ctx.Response.WriteAsync("Not found."));
+        }
+
+        private void ConfigureRoutes(IRouteBuilder routeBuilder)
+        {
+            // /Home/Index/optional
+            // można też używać literałów, np. /admin/...
+
+            routeBuilder.MapRoute("Default",
+                "{controller=Home}/{action=Index}/{id?}");
         }
     }
 }
